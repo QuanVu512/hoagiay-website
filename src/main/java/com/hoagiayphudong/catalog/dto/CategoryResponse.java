@@ -1,6 +1,6 @@
 package com.hoagiayphudong.catalog.dto;
 
-import com.hoagiayphudong.catalog.model.Category;
+import com.hoagiayphudong.model.Category;
 
 public record CategoryResponse(
         Long id,

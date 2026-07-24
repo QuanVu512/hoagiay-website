@@ -1,4 +1,4 @@
-package com.hoagiayphudong.catalog.model;
+package com.hoagiayphudong.model;
 
 public enum InventoryStatus {
     AVAILABLE,

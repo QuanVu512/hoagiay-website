@@ -1,11 +1,11 @@
-package com.hoagiayphudong.blog.repository;
+package com.hoagiayphudong.repository;
 
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.hoagiayphudong.blog.model.CareArticle;
+import com.hoagiayphudong.model.CareArticle;
 
 public interface CareArticleRepository extends JpaRepository<CareArticle, Long> {
 

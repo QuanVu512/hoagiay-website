@@ -1,11 +1,11 @@
-package com.hoagiayphudong.catalog.repository;
+package com.hoagiayphudong.repository;
 
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.hoagiayphudong.catalog.model.Product;
+import com.hoagiayphudong.model.Product;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
 

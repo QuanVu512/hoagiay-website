@@ -2,7 +2,7 @@ package com.hoagiayphudong.blog.dto;
 
 import java.time.OffsetDateTime;
 
-import com.hoagiayphudong.blog.model.CareArticle;
+import com.hoagiayphudong.model.CareArticle;
 
 public record ArticleSummaryResponse(
         Long id,

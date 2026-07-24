@@ -1,4 +1,4 @@
-package com.hoagiayphudong.catalog.controller;
+package com.hoagiayphudong.controller;
 
 import java.util.List;
 
@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hoagiayphudong.catalog.dto.CategoryResponse;
-import com.hoagiayphudong.catalog.service.CategoryService;
+import com.hoagiayphudong.service.CategoryService;
 
 @RestController
 @RequestMapping("/api/categories")

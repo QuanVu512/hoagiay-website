@@ -1,4 +1,4 @@
-package com.hoagiayphudong.contact.model;
+package com.hoagiayphudong.model;
 
 public enum ContactMessageStatus {
     NEW,

@@ -1,4 +1,4 @@
-package com.hoagiayphudong.catalog.service;
+package com.hoagiayphudong.service;
 
 import java.util.List;
 
@@ -8,8 +8,8 @@ import org.springframework.util.StringUtils;
 
 import com.hoagiayphudong.catalog.dto.ProductDetailResponse;
 import com.hoagiayphudong.catalog.dto.ProductSummaryResponse;
-import com.hoagiayphudong.catalog.model.Product;
-import com.hoagiayphudong.catalog.repository.ProductRepository;
+import com.hoagiayphudong.model.Product;
+import com.hoagiayphudong.repository.ProductRepository;
 import com.hoagiayphudong.common.exception.ResourceNotFoundException;
 
 @Service

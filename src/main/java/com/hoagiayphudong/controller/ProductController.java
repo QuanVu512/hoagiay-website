@@ -1,4 +1,4 @@
-package com.hoagiayphudong.catalog.controller;
+package com.hoagiayphudong.controller;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hoagiayphudong.catalog.dto.ProductDetailResponse;
 import com.hoagiayphudong.catalog.dto.ProductSummaryResponse;
-import com.hoagiayphudong.catalog.service.ProductService;
+import com.hoagiayphudong.service.ProductService;
 
 @RestController
 @RequestMapping("/api/products")

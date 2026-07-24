@@ -1,4 +1,4 @@
-package com.hoagiayphudong.blog.service;
+package com.hoagiayphudong.service;
 
 import java.util.List;
 
@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.hoagiayphudong.blog.dto.ArticleDetailResponse;
 import com.hoagiayphudong.blog.dto.ArticleSummaryResponse;
-import com.hoagiayphudong.blog.repository.CareArticleRepository;
+import com.hoagiayphudong.repository.CareArticleRepository;
 import com.hoagiayphudong.common.exception.ResourceNotFoundException;
 
 @Service

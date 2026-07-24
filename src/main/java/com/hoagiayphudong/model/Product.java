@@ -1,4 +1,4 @@
-package com.hoagiayphudong.catalog.model;
+package com.hoagiayphudong.model;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;

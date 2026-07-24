@@ -1,12 +1,12 @@
-package com.hoagiayphudong.contact.service;
+package com.hoagiayphudong.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.hoagiayphudong.contact.dto.ContactMessageRequest;
 import com.hoagiayphudong.contact.dto.ContactMessageResponse;
-import com.hoagiayphudong.contact.model.ContactMessage;
-import com.hoagiayphudong.contact.repository.ContactMessageRepository;
+import com.hoagiayphudong.model.ContactMessage;
+import com.hoagiayphudong.repository.ContactMessageRepository;
 
 @Service
 public class ContactMessageService {

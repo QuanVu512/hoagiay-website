@@ -1,4 +1,4 @@
-package com.hoagiayphudong.contact.model;
+package com.hoagiayphudong.model;
 
 import java.time.OffsetDateTime;
 

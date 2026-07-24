@@ -2,9 +2,9 @@ package com.hoagiayphudong.catalog.dto;
 
 import java.math.BigDecimal;
 
-import com.hoagiayphudong.catalog.model.Category;
-import com.hoagiayphudong.catalog.model.InventoryStatus;
-import com.hoagiayphudong.catalog.model.Product;
+import com.hoagiayphudong.model.Category;
+import com.hoagiayphudong.model.InventoryStatus;
+import com.hoagiayphudong.model.Product;
 
 public record ProductSummaryResponse(
         Long id,

@@ -1,4 +1,4 @@
-package com.hoagiayphudong.blog.model;
+package com.hoagiayphudong.model;
 
 import java.time.OffsetDateTime;
 

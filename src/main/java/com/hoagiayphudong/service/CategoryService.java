@@ -1,4 +1,4 @@
-package com.hoagiayphudong.catalog.service;
+package com.hoagiayphudong.service;
 
 import java.util.List;
 
@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.hoagiayphudong.catalog.dto.CategoryResponse;
-import com.hoagiayphudong.catalog.repository.CategoryRepository;
+import com.hoagiayphudong.repository.CategoryRepository;
 
 @Service
 public class CategoryService {

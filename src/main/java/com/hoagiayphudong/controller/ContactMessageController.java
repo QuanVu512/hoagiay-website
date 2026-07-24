@@ -1,4 +1,4 @@
-package com.hoagiayphudong.contact.controller;
+package com.hoagiayphudong.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hoagiayphudong.common.response.ApiResponse;
 import com.hoagiayphudong.contact.dto.ContactMessageRequest;
 import com.hoagiayphudong.contact.dto.ContactMessageResponse;
-import com.hoagiayphudong.contact.service.ContactMessageService;
+import com.hoagiayphudong.service.ContactMessageService;
 
 import jakarta.validation.Valid;
 

@@ -2,8 +2,8 @@ package com.hoagiayphudong.contact.dto;
 
 import java.time.OffsetDateTime;
 
-import com.hoagiayphudong.contact.model.ContactMessage;
-import com.hoagiayphudong.contact.model.ContactMessageStatus;
+import com.hoagiayphudong.model.ContactMessage;
+import com.hoagiayphudong.model.ContactMessageStatus;
 
 public record ContactMessageResponse(
         Long id,
