@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hoa Giấy Phù Đổng</title>
+    <link rel="stylesheet" href="/assets/css/main.css">
+</head>
+<body>
+<header class="site-header">
+    <a class="brand" href="/">Hoa Giấy Phù Đổng</a>
+    <nav class="nav">
+        <a href="#products">Sản phẩm</a>
+        <a href="#articles">Chăm sóc</a>
+        <a href="#contact">Liên hệ</a>
+    </nav>
+</header>
+
+<main>
+    <section class="hero">
+        <div class="hero-content">
+            <p class="eyebrow">Nhà vườn hoa giấy</p>
+            <h1>Catalog hoa giấy cho sân vườn, ban công và công trình</h1>
+            <p>Trang demo portfolio với Spring Boot MVC, REST API và frontend HTML/CSS/JavaScript.</p>
+            <a class="button" href="#products">Xem sản phẩm</a>
+        </div>
+    </section>
+
+    <section class="section" aria-labelledby="categories-title">
+        <div class="section-heading">
+            <p class="eyebrow">Danh mục</p>
+            <h2 id="categories-title">Các dòng hoa giấy</h2>
+        </div>
+        <div id="categories" class="chip-list"></div>
+    </section>
+
+    <section id="products" class="section" aria-labelledby="products-title">
+        <div class="section-heading">
+            <p class="eyebrow">Catalog</p>
+            <h2 id="products-title">Sản phẩm nổi bật</h2>
+        </div>
+        <div id="product-list" class="grid"></div>
+    </section>
+
+    <section id="articles" class="section" aria-labelledby="articles-title">
+        <div class="section-heading">
+            <p class="eyebrow">Kinh nghiệm</p>
+            <h2 id="articles-title">Bài viết chăm sóc</h2>
+        </div>
+        <div id="article-list" class="grid two-columns"></div>
+    </section>
+
+    <section id="contact" class="section contact-section" aria-labelledby="contact-title">
+        <div class="section-heading">
+            <p class="eyebrow">Tư vấn</p>
+            <h2 id="contact-title">Gửi thông tin liên hệ</h2>
+        </div>
+        <form id="contact-form" class="contact-form">
+            <label>
+                Họ tên
+                <input name="fullName" type="text" maxlength="120" required>
+            </label>
+            <label>
+                Số điện thoại
+                <input name="phone" type="tel" maxlength="30">
+            </label>
+            <label>
+                Email
+                <input name="email" type="email" maxlength="160">
+            </label>
+            <label>
+                Nội dung
+                <textarea name="message" maxlength="2000" rows="5" required></textarea>
+            </label>
+            <button class="button" type="submit">Gửi tư vấn</button>
+            <p id="form-message" class="form-message" role="status"></p>
+        </form>
+    </section>
+</main>
+
+<script src="/assets/js/main.js"></script>
+</body>
+</html>

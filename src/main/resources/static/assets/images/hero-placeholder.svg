@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+    <title id="title">Hoa giấy trước cổng nhà</title>
+    <desc id="desc">Minh họa nền với giàn hoa giấy hồng và lá xanh.</desc>
+    <rect width="1600" height="900" fill="#f7d7dd"/>
+    <rect y="570" width="1600" height="330" fill="#dfe9dc"/>
+    <path d="M0 610c240-95 412-58 626-142 190-75 344-130 549-90 190 37 284-15 425-85v607H0z" fill="#315f46"/>
+    <path d="M0 675c260-80 438-12 674-74 203-54 388-112 593-46 130 42 222 33 333-9v354H0z" fill="#4f8667"/>
+    <g fill="#b83265" opacity=".96">
+        <circle cx="1030" cy="170" r="86"/>
+        <circle cx="1130" cy="260" r="74"/>
+        <circle cx="945" cy="292" r="98"/>
+        <circle cx="1202" cy="140" r="62"/>
+        <circle cx="1324" cy="244" r="82"/>
+        <circle cx="796" cy="182" r="70"/>
+    </g>
+    <g fill="#ef7ca5" opacity=".95">
+        <circle cx="1012" cy="362" r="64"/>
+        <circle cx="1145" cy="408" r="80"/>
+        <circle cx="1270" cy="365" r="56"/>
+        <circle cx="870" cy="394" r="74"/>
+        <circle cx="1370" cy="115" r="52"/>
+    </g>
+    <g fill="#ffffff" opacity=".55">
+        <circle cx="250" cy="180" r="90"/>
+        <circle cx="340" cy="235" r="54"/>
+        <circle cx="170" cy="290" r="66"/>
+    </g>
+    <path d="M1030 122c-45 185-52 330-20 520M1210 104c-73 180-112 335-112 520M850 136c44 170 60 318 48 505" stroke="#295339" stroke-width="20" stroke-linecap="round" opacity=".75"/>
+</svg>

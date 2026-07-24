@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-labelledby="title desc">
+    <title id="title">Cây hoa giấy</title>
+    <desc id="desc">Minh họa sản phẩm cây hoa giấy.</desc>
+    <rect width="800" height="600" fill="#fff4f0"/>
+    <rect y="450" width="800" height="150" fill="#dcebdd"/>
+    <path d="M402 138c-54 138-64 252-34 340M440 160c55 124 68 219 42 318" stroke="#365f42" stroke-width="20" stroke-linecap="round"/>
+    <g fill="#b83265">
+        <circle cx="316" cy="155" r="58"/>
+        <circle cx="402" cy="108" r="70"/>
+        <circle cx="486" cy="176" r="62"/>
+        <circle cx="342" cy="248" r="74"/>
+        <circle cx="450" cy="286" r="84"/>
+        <circle cx="548" cy="256" r="58"/>
+    </g>
+    <g fill="#ef8aaa">
+        <circle cx="245" cy="238" r="45"/>
+        <circle cx="525" cy="104" r="46"/>
+        <circle cx="562" cy="338" r="54"/>
+    </g>
+    <path d="M270 478h260l-28 88H298z" fill="#9a6a43"/>
+</svg>

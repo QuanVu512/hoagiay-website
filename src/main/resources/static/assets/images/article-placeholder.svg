@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-labelledby="title desc">
+    <title id="title">Ghi chú chăm sóc hoa giấy</title>
+    <desc id="desc">Minh họa bài viết chăm sóc cây hoa giấy.</desc>
+    <rect width="800" height="600" fill="#f4fbf6"/>
+    <rect x="132" y="92" width="536" height="416" rx="8" fill="#ffffff" stroke="#cfe1d6" stroke-width="8"/>
+    <path d="M215 190h370M215 258h370M215 326h250" stroke="#7d9284" stroke-width="20" stroke-linecap="round"/>
+    <g fill="#b83265">
+        <circle cx="555" cy="382" r="40"/>
+        <circle cx="600" cy="418" r="38"/>
+        <circle cx="525" cy="442" r="46"/>
+    </g>
+    <path d="M520 472c18-52 50-88 98-108" stroke="#2e7d5b" stroke-width="14" stroke-linecap="round"/>
+</svg>
