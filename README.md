@@ -4,17 +4,19 @@ Website portfolio về hoa giấy, xây bằng Spring Boot cho backend và HTML/
 
 ## Tech stack
 
-- Backend: Spring Boot, Spring Web, Spring Data JPA, Bean Validation.
-- Database: PostgreSQL cho deploy; H2 cho local/test.
+- Backend: Spring Boot, Spring Web, Spring Data JPA, Bean Validation, Spring Security, Spring Session JDBC.
+- Database: PostgreSQL/Neon cho local, test và deploy.
 - Migration: Flyway.
 - Frontend: HTML/CSS/JavaScript trong `src/main/resources/static`.
+  Trang chủ gọi API `/api/session` bằng JavaScript để hiển thị trạng thái đăng nhập từ session.
+- Session đăng nhập lưu bằng Spring Session JDBC; bảng session do Spring tự khởi tạo khi app chạy.
 
 ## Cấu trúc chính
 
 - `src/main/java/com/hoagiayphudong/catalog`: danh mục và sản phẩm.
 - `src/main/java/com/hoagiayphudong/blog`: bài viết chăm sóc hoa giấy.
 - `src/main/java/com/hoagiayphudong/contact`: form liên hệ/tư vấn.
-- `src/main/java/com/hoagiayphudong/common`: thành phần dùng chung.
+- `src/main/java/com/hoagiayphudong/helper`: exception, response và thành phần dùng chung.
 - `src/main/resources/db/migration`: schema và dữ liệu nền.
 - `src/main/resources/static`: frontend tĩnh.
 - `docs/project-foundation.md`: ghi chú định hướng dự án.
@@ -33,6 +35,14 @@ Ví dụ các API nền:
 
 ## Chạy local
 
+Khai báo biến kết nối PostgreSQL/Neon trong file `.env` hoặc trong Environment Variables của IDE:
+
+```text
+DATABASE_URL=jdbc:postgresql://<host>/<database>?sslmode=require
+DATABASE_USERNAME=<username>
+DATABASE_PASSWORD=<password>
+```
+
 ```powershell
 .\gradlew.bat bootRun
 ```
@@ -41,10 +51,9 @@ Ví dụ các API nền:
 
 ## Cấu hình deploy PostgreSQL
 
-Khi deploy, đặt profile `prod` và khai báo:
+Khi deploy, khai báo:
 
 ```text
-SPRING_PROFILES_ACTIVE=prod
 DATABASE_URL=jdbc:postgresql://<host>/<database>?sslmode=require
 DATABASE_USERNAME=<username>
 DATABASE_PASSWORD=<password>

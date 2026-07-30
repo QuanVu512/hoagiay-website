@@ -13,7 +13,12 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@NoArgsConstructor
 @Entity
 @Table(name = "categories")
 public class Category {
@@ -23,18 +28,23 @@ public class Category {
     private Long id;
 
     @Column(nullable = false, length = 120)
+    @Setter
     private String name;
 
     @Column(nullable = false, unique = true, length = 160)
+    @Setter
     private String slug;
 
     @Column(columnDefinition = "TEXT")
+    @Setter
     private String description;
 
     @Column(name = "sort_order", nullable = false)
+    @Setter
     private Integer sortOrder = 0;
 
     @Column(nullable = false)
+    @Setter
     private Boolean active = true;
 
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -56,61 +66,5 @@ public class Category {
     @PreUpdate
     void beforeUpdate() {
         updatedAt = OffsetDateTime.now();
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getSlug() {
-        return slug;
-    }
-
-    public void setSlug(String slug) {
-        this.slug = slug;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Integer getSortOrder() {
-        return sortOrder;
-    }
-
-    public void setSortOrder(Integer sortOrder) {
-        this.sortOrder = sortOrder;
-    }
-
-    public Boolean getActive() {
-        return active;
-    }
-
-    public void setActive(Boolean active) {
-        this.active = active;
-    }
-
-    public OffsetDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public OffsetDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public List<Product> getProducts() {
-        return products;
     }
 }

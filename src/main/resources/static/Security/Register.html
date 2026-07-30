@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Đăng ký - Hoa Giấy Phù Đổng</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/Asset/Admin/Admin.css" rel="stylesheet">
+</head>
+<body class="login-page">
+<main class="login-shell">
+    <section class="login-panel shadow-sm register-panel">
+        <h1 class="h4 fw-bold mb-1">Đăng ký tài khoản</h1>
+        <p class="text-secondary mb-4">Giao diện mẫu cho bước đăng ký. Phần xử lý backend có thể nối sau.</p>
+
+        <form id="RegisterForm">
+            <input data-csrf-token name="_csrf" type="hidden">
+            <div class="row g-3">
+                <div class="col-12">
+                    <label class="form-label fw-medium" for="fullName">Họ tên</label>
+                    <input class="form-control" id="fullName" name="fullName" required type="text" maxlength="120">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-medium" for="username">Tên đăng nhập</label>
+                    <input class="form-control" id="username" name="username" required type="text" maxlength="50" autocomplete="username">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-medium" for="email">Email</label>
+                    <input class="form-control" id="email" name="email" required type="email" maxlength="160" autocomplete="email">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-medium" for="password">Mật khẩu</label>
+                    <input class="form-control" id="password" name="password" required type="password" minlength="6" maxlength="120" autocomplete="new-password">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-medium" for="confirmPassword">Nhập lại mật khẩu</label>
+                    <input class="form-control" id="confirmPassword" name="confirmPassword" required type="password" minlength="6" maxlength="120" autocomplete="new-password">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-medium" for="phone">Số điện thoại</label>
+                    <input class="form-control" id="phone" name="phone" type="tel" maxlength="30">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-medium" for="department">Bộ phận</label>
+                    <input class="form-control" id="department" name="department" type="text" maxlength="80">
+                </div>
+            </div>
+            <button class="btn btn-success w-100 mt-4" type="button">Đăng ký</button>
+        </form>
+
+        <div class="text-center mt-3">
+            <a href="/login" class="auth-link">Đã có tài khoản? Đăng nhập</a>
+        </div>
+    </section>
+</main>
+<script src="/Asset/Security/Csrf.js"></script>
+</body>
+</html>

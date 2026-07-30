@@ -4,18 +4,15 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Hoa Giấy Phù Đổng</title>
-    <!-- Tích hợp Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- File CSS tùy chỉnh hiện tại -->
     <link rel="stylesheet" href="/assets/css/main.css">
 </head>
 <body class="bg-light">
 
-<!-- Header & Navbar -->
 <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm py-3">
     <div class="container">
         <a class="navbar-brand text-danger fw-bold fs-4" href="/">Hoa Giấy Phù Đổng</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-toggle="target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
         </button>
 
@@ -31,16 +28,23 @@
                     <a class="nav-link px-3" href="#contact">Liên hệ</a>
                 </li>
             </ul>
-            <div class="d-flex gap-2">
-                <button class="btn btn-outline-danger fw-medium px-4" type="button">Đăng nhập</button>
-                <button class="btn btn-danger fw-medium px-4" type="button">Đăng ký</button>
+            <div class="d-flex gap-2" id="GuestActions">
+                <a class="btn btn-outline-danger fw-medium px-4" href="/login">Đăng nhập</a>
+                <a class="btn btn-danger fw-medium px-4" href="/register">Đăng ký</a>
+            </div>
+            <div class="d-flex flex-wrap align-items-center gap-2 d-none" id="UserActions">
+                <span class="fw-semibold text-dark" id="SessionUsername"></span>
+                <a class="btn btn-outline-danger fw-medium px-4 d-none" id="AdminLink" href="/admin/account">Quản trị</a>
+                <form action="/logout" method="post">
+                    <input data-csrf-token name="_csrf" type="hidden">
+                    <button class="btn btn-danger fw-medium px-4" type="submit">Đăng xuất</button>
+                </form>
             </div>
         </div>
     </div>
 </nav>
 
 <main>
-    <!-- Hero Banner Section -->
     <section class="hero py-5 text-center bg-white border-bottom">
         <div class="container py-5">
             <div class="row justify-content-center">
@@ -54,43 +58,36 @@
         </div>
     </section>
 
-    <!-- Categories Section -->
     <section class="py-5" aria-labelledby="categories-title">
         <div class="container py-4">
             <div class="text-center mb-4">
                 <p class="text-danger fw-bold mb-1 text-uppercase">Danh mục</p>
                 <h2 id="categories-title" class="fw-bold mb-4">Các dòng hoa giấy</h2>
             </div>
-            <!-- js sẽ đổ các thẻ span class="chip" vào đây -->
             <div id="categories" class="d-flex flex-wrap justify-content-center gap-2"></div>
         </div>
     </section>
 
-    <!-- Products Section -->
     <section id="products" class="py-5 bg-white border-top border-bottom" aria-labelledby="products-title">
         <div class="container py-4">
             <div class="text-center mb-5">
                 <p class="text-danger fw-bold mb-1 text-uppercase">Catalog</p>
                 <h2 id="products-title" class="fw-bold">Sản phẩm nổi bật</h2>
             </div>
-            <!-- Vùng chứa Card sản phẩm, dùng grid Bootstrap -->
             <div id="product-list" class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4"></div>
         </div>
     </section>
 
-    <!-- Articles Section -->
     <section id="articles" class="py-5" aria-labelledby="articles-title">
         <div class="container py-4">
             <div class="text-center mb-5">
                 <p class="text-danger fw-bold mb-1 text-uppercase">Kinh nghiệm</p>
                 <h2 id="articles-title" class="fw-bold">Bài viết chăm sóc</h2>
             </div>
-            <!-- Vùng chứa Bài viết -->
             <div id="article-list" class="row row-cols-1 row-cols-md-2 g-4 justify-content-center"></div>
         </div>
     </section>
 
-    <!-- Contact Section -->
     <section id="contact" class="py-5 bg-white border-top" aria-labelledby="contact-title">
         <div class="container py-5">
             <div class="row justify-content-center">
@@ -130,16 +127,14 @@
     </section>
 </main>
 
-<!-- Footer -->
 <footer class="bg-dark text-white py-4 text-center">
     <div class="container">
         <p class="mb-0 text-white-50">&copy; 2026 Hoa Giấy Phù Đổng. All Rights Reserved.</p>
     </div>
 </footer>
 
-<!-- Bootstrap 5 JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<!-- Logic Frontend hiện tại -->
+<script src="/Asset/Security/Csrf.js"></script>
 <script src="/assets/js/main.js"></script>
 </body>
 </html>

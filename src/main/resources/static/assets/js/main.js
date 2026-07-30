@@ -3,9 +3,33 @@ const productList = document.querySelector("#product-list");
 const articleList = document.querySelector("#article-list");
 const contactForm = document.querySelector("#contact-form");
 const formMessage = document.querySelector("#form-message");
+const guestActions = document.querySelector("#GuestActions");
+const userActions = document.querySelector("#UserActions");
+const sessionUsername = document.querySelector("#SessionUsername");
+const adminLink = document.querySelector("#AdminLink");
+
+function readCookie(name) {
+    return document.cookie
+        .split("; ")
+        .find((item) => item.startsWith(`${name}=`))
+        ?.split("=")
+        .slice(1)
+        .join("=") || "";
+}
+
+function buildCsrfHeader() {
+    const token = readCookie("XSRF-TOKEN");
+    return token ? { "X-XSRF-TOKEN": decodeURIComponent(token) } : {};
+}
 
 async function fetchJson(url, options) {
-    const response = await fetch(url, options);
+    const response = await fetch(url, {
+        ...(options || {}),
+        headers: {
+            ...buildCsrfHeader(),
+            ...(options?.headers || {})
+        }
+    });
     const data = await response.json().catch(() => null);
 
     if (!response.ok) {
@@ -14,6 +38,21 @@ async function fetchJson(url, options) {
     }
 
     return data;
+}
+
+async function loadSession() {
+    try {
+        const response = await fetchJson("/api/session");
+        const session = response.data;
+
+        guestActions.classList.toggle("d-none", session.loggedIn);
+        userActions.classList.toggle("d-none", !session.loggedIn);
+        sessionUsername.textContent = session.username || "";
+        adminLink.classList.toggle("d-none", !session.admin);
+    } catch (error) {
+        guestActions.classList.remove("d-none");
+        userActions.classList.add("d-none");
+    }
 }
 
 function renderEmpty(container, message) {
@@ -110,3 +149,5 @@ loadHomeData().catch((error) => {
     renderEmpty(productList, error.message);
     renderEmpty(articleList, error.message);
 });
+
+loadSession();

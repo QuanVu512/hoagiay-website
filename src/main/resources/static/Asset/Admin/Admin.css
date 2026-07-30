@@ -1,0 +1,108 @@
+body {
+    background: #f5f7f4;
+    color: #223127;
+}
+
+.navbar {
+    background: #18392b;
+}
+
+.admin-nav-actions {
+    gap: 0.2rem;
+}
+
+.admin-navbar .nav-link,
+.admin-navbar .btn {
+    align-items: center;
+    display: inline-flex;
+    gap: 0.35rem;
+    white-space: nowrap;
+}
+
+.admin-navbar .nav-link {
+    border-radius: 8px;
+    padding-inline: 0.75rem;
+}
+
+.admin-navbar .nav-link.active {
+    background: rgba(255, 255, 255, 0.14);
+}
+
+.page-shell {
+    max-width: 1180px;
+}
+
+.card,
+.modal-content,
+.login-panel {
+    border-radius: 8px;
+}
+
+.table thead th {
+    background: #24372c;
+    color: #fff;
+    font-size: 0.88rem;
+    letter-spacing: 0;
+}
+
+.icon-btn {
+    align-items: center;
+    display: inline-flex;
+    height: 36px;
+    justify-content: center;
+    width: 36px;
+}
+
+.status-dot {
+    border-radius: 50%;
+    display: inline-block;
+    height: 0.55rem;
+    margin-right: 0.4rem;
+    width: 0.55rem;
+}
+
+.empty-state {
+    border: 1px dashed #b8c4b6;
+    border-radius: 8px;
+    color: #5f6f64;
+    padding: 1rem;
+}
+
+.admin-footer {
+    color: #607065;
+    font-size: 0.9rem;
+    padding: 2rem 0;
+}
+
+.login-page {
+    min-height: 100vh;
+}
+
+.login-shell {
+    align-items: center;
+    display: flex;
+    min-height: 100vh;
+    padding: 1.5rem;
+}
+
+.login-panel {
+    background: #fff;
+    margin: 0 auto;
+    max-width: 430px;
+    padding: 2rem;
+    width: 100%;
+}
+
+.register-panel {
+    max-width: 680px;
+}
+
+.auth-link {
+    color: #1b6b46;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.auth-link:hover {
+    text-decoration: underline;
+}

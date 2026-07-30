@@ -17,40 +17,20 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name = "care_articles")
-public class CareArticle {
+@Table(name = "roles")
+public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 220)
+    @Column(nullable = false, unique = true, length = 40)
     @Setter
-    private String title;
+    private String name;
 
-    @Column(nullable = false, unique = true, length = 260)
+    @Column(length = 255)
     @Setter
-    private String slug;
-
-    @Column(columnDefinition = "TEXT")
-    @Setter
-    private String summary;
-
-    @Column(columnDefinition = "TEXT")
-    @Setter
-    private String content;
-
-    @Column(name = "thumbnail_url", length = 500)
-    @Setter
-    private String thumbnailUrl;
-
-    @Column(nullable = false)
-    @Setter
-    private Boolean published = false;
-
-    @Column(name = "published_at")
-    @Setter
-    private OffsetDateTime publishedAt;
+    private String description;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private OffsetDateTime createdAt;
@@ -68,5 +48,9 @@ public class CareArticle {
     @PreUpdate
     void beforeUpdate() {
         updatedAt = OffsetDateTime.now();
+    }
+
+    public String getAuthority() {
+        return name;
     }
 }

@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Đăng nhập - Hoa Giấy Phù Đổng</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/Asset/Admin/Admin.css" rel="stylesheet">
+</head>
+<body class="login-page">
+<main class="login-shell">
+    <section class="login-panel shadow-sm">
+        <h1 class="h4 fw-bold mb-1">Đăng nhập quản trị</h1>
+        <p class="text-secondary mb-4">Dùng tài khoản nhân viên đã được cấp trong hệ thống.</p>
+
+        <div id="LoginError" class="alert alert-danger d-none">Tên đăng nhập, email hoặc mật khẩu chưa đúng.</div>
+        <div id="LogoutSuccess" class="alert alert-success d-none">Bạn đã đăng xuất.</div>
+
+        <form action="/login" method="post">
+            <input data-csrf-token name="_csrf" type="hidden">
+            <div class="mb-3">
+                <label class="form-label fw-medium" for="username">Tên đăng nhập hoặc email</label>
+                <input class="form-control" id="username" name="username" required type="text" autocomplete="username">
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-medium" for="password">Mật khẩu</label>
+                <input class="form-control" id="password" name="password" required type="password" autocomplete="current-password">
+            </div>
+            <div class="form-check mb-4">
+                <input class="form-check-input" id="RememberMe" name="remember-me" type="checkbox">
+                <label class="form-check-label" for="RememberMe">Ghi nhớ đăng nhập</label>
+            </div>
+            <button class="btn btn-success w-100" type="submit">Đăng nhập</button>
+        </form>
+        <div class="text-center mt-3">
+            <a href="/register" class="auth-link">Tạo giao diện đăng ký</a>
+        </div>
+    </section>
+</main>
+<script src="/Asset/Security/Csrf.js"></script>
+<script>
+    const Params = new URLSearchParams(window.location.search);
+    document.getElementById('LoginError').classList.toggle('d-none', !Params.has('error'));
+    document.getElementById('LogoutSuccess').classList.toggle('d-none', !Params.has('logout'));
+</script>
+</body>
+</html>

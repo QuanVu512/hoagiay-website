@@ -11,7 +11,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@NoArgsConstructor
 @Entity
 @Table(name = "contact_messages")
 public class ContactMessage {
@@ -21,19 +26,24 @@ public class ContactMessage {
     private Long id;
 
     @Column(name = "full_name", nullable = false, length = 120)
+    @Setter
     private String fullName;
 
     @Column(length = 30)
+    @Setter
     private String phone;
 
     @Column(length = 160)
+    @Setter
     private String email;
 
     @Column(nullable = false, columnDefinition = "TEXT")
+    @Setter
     private String message;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 40)
+    @Setter
     private ContactMessageStatus status = ContactMessageStatus.NEW;
 
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -42,53 +52,5 @@ public class ContactMessage {
     @PrePersist
     void beforeCreate() {
         createdAt = OffsetDateTime.now();
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public ContactMessageStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(ContactMessageStatus status) {
-        this.status = status;
-    }
-
-    public OffsetDateTime getCreatedAt() {
-        return createdAt;
     }
 }

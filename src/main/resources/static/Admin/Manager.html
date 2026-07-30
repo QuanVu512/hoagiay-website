@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Quản lý hồ sơ nhân viên - Hoa Giấy Phù Đổng</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="/Asset/Admin/Admin.css" rel="stylesheet">
+</head>
+<body>
+<div id="AdminNavigation"></div>
+
+<main class="container page-shell py-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
+        <div>
+            <h1 class="h3 fw-bold mb-1">Quản lý hồ sơ nhân viên</h1>
+            <p class="text-secondary mb-0">Tạo hồ sơ cá nhân trước, sau đó mới cấp tài khoản đăng nhập.</p>
+        </div>
+        <button class="btn btn-success d-inline-flex align-items-center gap-2" id="AddManagerButton" type="button">
+            <i class="bi bi-person-plus"></i>
+            <span>Thêm hồ sơ</span>
+        </button>
+    </div>
+
+    <div id="AlertBox" class="alert d-none" role="alert"></div>
+
+    <section class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead>
+                    <tr>
+                        <th class="ps-4">ID</th>
+                        <th>Họ tên</th>
+                        <th>Số điện thoại</th>
+                        <th>Bộ phận</th>
+                        <th>Địa chỉ</th>
+                        <th>Tài khoản</th>
+                        <th class="text-end pe-4">Thao tác</th>
+                    </tr>
+                    </thead>
+                    <tbody id="ManagerTableBody">
+                    <tr><td colspan="7" class="text-center text-secondary py-4">Đang tải dữ liệu...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+</main>
+
+<div class="modal fade" id="ManagerModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header">
+                <h2 class="modal-title h5 fw-bold" id="ManagerModalTitle">Thêm hồ sơ nhân viên</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+            </div>
+            <form id="ManagerForm">
+                <div class="modal-body">
+                    <input type="hidden" id="ManagerId">
+                    <div class="mb-3">
+                        <label class="form-label fw-medium" for="FullName">Họ tên</label>
+                        <input class="form-control" id="FullName" maxlength="120" required type="text">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-medium" for="Phone">Số điện thoại</label>
+                        <input class="form-control" id="Phone" maxlength="30" type="tel">
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium" for="DepartmentId">Bộ phận</label>
+                            <select class="form-select" id="DepartmentId"></select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium" for="Province">Tỉnh/thành phố</label>
+                            <input class="form-control" id="Province" maxlength="80" type="text">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium" for="District">Quận/huyện</label>
+                            <input class="form-control" id="District" maxlength="80" type="text">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium" for="Ward">Phường/xã</label>
+                            <input class="form-control" id="Ward" maxlength="80" type="text">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-medium" for="AddressDetail">Địa chỉ chi tiết</label>
+                            <input class="form-control" id="AddressDetail" maxlength="160" type="text">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-success">Lưu hồ sơ</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<footer class="admin-footer">
+    <div class="container page-shell d-flex flex-wrap justify-content-between gap-2">
+        <span>Hoa Giấy Phù Đổng</span>
+        <span>Trang quản trị</span>
+    </div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/Asset/Admin/AdminNavigation.js"></script>
+<script src="/Asset/Security/Csrf.js"></script>
+<script src="/Asset/Admin/Manager.js"></script>
+</body>
+</html>

@@ -17,40 +17,24 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name = "care_articles")
-public class CareArticle {
+@Table(name = "departments")
+public class Department {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 220)
+    @Column(nullable = false, unique = true, length = 80)
     @Setter
-    private String title;
+    private String name;
 
-    @Column(nullable = false, unique = true, length = 260)
+    @Column(length = 255)
     @Setter
-    private String slug;
-
-    @Column(columnDefinition = "TEXT")
-    @Setter
-    private String summary;
-
-    @Column(columnDefinition = "TEXT")
-    @Setter
-    private String content;
-
-    @Column(name = "thumbnail_url", length = 500)
-    @Setter
-    private String thumbnailUrl;
+    private String description;
 
     @Column(nullable = false)
     @Setter
-    private Boolean published = false;
-
-    @Column(name = "published_at")
-    @Setter
-    private OffsetDateTime publishedAt;
+    private Boolean active = true;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private OffsetDateTime createdAt;

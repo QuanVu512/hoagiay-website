@@ -9,7 +9,7 @@ Dự án đi theo hướng website catalog cho nhà vườn hoa giấy: giới t
 - `catalog`: danh mục và sản phẩm hoa giấy.
 - `blog`: bài viết chăm sóc, tin tức, kinh nghiệm trồng cây.
 - `contact`: tin nhắn tư vấn/liên hệ của khách.
-- `common`: lỗi chung, response chung và tiện ích dùng lại.
+- `helper`: lỗi chung, response chung và tiện ích dùng lại.
 - `config`: cấu hình ứng dụng.
 - `security`: chừa sẵn cho đăng nhập quản trị sau này.
 
@@ -22,12 +22,11 @@ Dự án đi theo hướng website catalog cho nhà vườn hoa giấy: giới t
 
 ## Database
 
-Database chính nên dùng PostgreSQL. Khi chạy local/test dự án dùng H2 ở chế độ tương thích PostgreSQL để khởi động nhanh, còn khi deploy sẽ trỏ sang PostgreSQL thật qua biến môi trường.
+Database chính dùng PostgreSQL. Khi chạy local, test hoặc deploy, dự án đều đọc kết nối PostgreSQL/Neon qua biến môi trường để tránh lệch dữ liệu giữa máy cá nhân và database thật.
 
 Gợi ý dịch vụ free cho portfolio: Neon PostgreSQL. Lý do: có free tier, không cần thẻ tín dụng theo thông tin giá hiện tại, là PostgreSQL chuẩn nên tích hợp tốt với Spring Boot/JPA/Flyway và sau này nâng cấp ít phải đổi công nghệ.
 
 ## Profile cấu hình
 
-- `local`: H2 file database, tiện chạy trên máy cá nhân.
-- `test`: H2 in-memory database, tiện chạy test sạch.
-- `prod`: PostgreSQL, nhận kết nối qua `DATABASE_URL`, `DATABASE_USERNAME`, `DATABASE_PASSWORD`.
+- Local/test/deploy đều dùng PostgreSQL, nhận kết nối qua `DATABASE_URL`, `DATABASE_USERNAME`, `DATABASE_PASSWORD`.
+- Có thể khai báo các biến này trong `.env` khi chạy trên máy cá nhân hoặc trong Environment Variables khi deploy.
