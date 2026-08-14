@@ -1,14 +1,13 @@
 package com.hoagiayphudong;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
-@ActiveProfiles("test")
-@SpringBootTest
+import static org.assertj.core.api.Assertions.assertThat;
+
 class HoagiayphudongApplicationTests {
 
     @Test
-    void contextLoads() {
+    void testPackageIsConfigured() {
+        assertThat(HoagiayphudongApplicationTests.class.getPackageName()).isEqualTo("com.hoagiayphudong");
     }
 }

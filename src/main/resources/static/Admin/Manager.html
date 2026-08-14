@@ -25,6 +25,47 @@
 
     <div id="AlertBox" class="alert d-none" role="alert"></div>
 
+    <div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-3">
+        <div class="d-flex flex-wrap align-items-end gap-2">
+            <div>
+                <label class="form-label text-secondary small mb-1" for="ManagerKeyword">Tìm kiếm</label>
+                <input class="form-control form-control-sm" id="ManagerKeyword" type="search" placeholder="Họ tên, SĐT, địa chỉ...">
+            </div>
+            <div>
+                <label class="form-label text-secondary small mb-1" for="ManagerDepartmentFilter">Bộ phận</label>
+                <select class="form-select form-select-sm" id="ManagerDepartmentFilter">
+                    <option value="">Tất cả bộ phận</option>
+                </select>
+            </div>
+            <div>
+                <label class="form-label text-secondary small mb-1" for="ManagerHasAccountFilter">Tài khoản</label>
+                <select class="form-select form-select-sm" id="ManagerHasAccountFilter">
+                    <option value="">Tất cả</option>
+                    <option value="true">Đã có</option>
+                    <option value="false">Chưa có</option>
+                </select>
+            </div>
+            <button class="btn btn-outline-success btn-sm" id="ManagerSearchButton" type="button">Tìm</button>
+            <button class="btn btn-outline-secondary btn-sm" id="ManagerResetButton" type="button">Xóa lọc</button>
+        </div>
+        <div class="d-flex flex-wrap align-items-center gap-2">
+        <label class="form-label text-secondary small mb-0" for="ManagerSort">Sắp xếp</label>
+        <select class="form-select form-select-sm w-auto" id="ManagerSort">
+            <option value="id,asc">ID cũ nhất</option>
+            <option value="id,desc">ID mới nhất</option>
+            <option value="fullName,asc">Họ tên A-Z</option>
+            <option value="fullName,desc">Họ tên Z-A</option>
+        </select>
+        <label class="form-label text-secondary small mb-0" for="ManagerSize">Hiển thị</label>
+        <select class="form-select form-select-sm w-auto" id="ManagerSize">
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="50">50</option>
+        </select>
+        </div>
+    </div>
+
     <section class="card border-0 shadow-sm">
         <div class="card-body p-0">
             <div class="table-responsive">
@@ -44,6 +85,9 @@
                     <tr><td colspan="7" class="text-center text-secondary py-4">Đang tải dữ liệu...</td></tr>
                     </tbody>
                 </table>
+            </div>
+            <div class="border-top px-4 py-3">
+                <div id="ManagerPagination" class="d-flex flex-wrap justify-content-between align-items-center gap-2"></div>
             </div>
         </div>
     </section>
@@ -106,8 +150,9 @@
     </div>
 </footer>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/Asset/Security/AuthToken.js"></script>
 <script src="/Asset/Admin/AdminNavigation.js"></script>
-<script src="/Asset/Security/Csrf.js"></script>
+<script src="/Asset/Admin/AdminPagination.js"></script>
 <script src="/Asset/Admin/Manager.js"></script>
 </body>
 </html>

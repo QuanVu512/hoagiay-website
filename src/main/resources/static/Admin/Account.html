@@ -25,6 +25,47 @@
 
     <div id="AlertBox" class="alert d-none" role="alert"></div>
 
+    <div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-3">
+        <div class="d-flex flex-wrap align-items-end gap-2">
+            <div>
+                <label class="form-label text-secondary small mb-1" for="AccountKeyword">Tìm kiếm</label>
+                <input class="form-control form-control-sm" id="AccountKeyword" type="search" placeholder="Tên, username, email...">
+            </div>
+            <div>
+                <label class="form-label text-secondary small mb-1" for="AccountRoleFilter">Vai trò</label>
+                <select class="form-select form-select-sm" id="AccountRoleFilter">
+                    <option value="">Tất cả vai trò</option>
+                </select>
+            </div>
+            <div>
+                <label class="form-label text-secondary small mb-1" for="AccountActiveFilter">Trạng thái</label>
+                <select class="form-select form-select-sm" id="AccountActiveFilter">
+                    <option value="">Tất cả</option>
+                    <option value="true">Đang hoạt động</option>
+                    <option value="false">Tạm khóa</option>
+                </select>
+            </div>
+            <button class="btn btn-outline-success btn-sm" id="AccountSearchButton" type="button">Tìm</button>
+            <button class="btn btn-outline-secondary btn-sm" id="AccountResetButton" type="button">Xóa lọc</button>
+        </div>
+        <div class="d-flex flex-wrap align-items-center gap-2">
+        <label class="form-label text-secondary small mb-0" for="AccountSort">Sắp xếp</label>
+        <select class="form-select form-select-sm w-auto" id="AccountSort">
+            <option value="id,desc">ID mới nhất</option>
+            <option value="id,asc">ID cũ nhất</option>
+            <option value="fullName,asc">Tên hồ sơ A-Z</option>
+            <option value="fullName,desc">Tên hồ sơ Z-A</option>
+        </select>
+        <label class="form-label text-secondary small mb-0" for="AccountSize">Hiển thị</label>
+        <select class="form-select form-select-sm w-auto" id="AccountSize">
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="50">50</option>
+        </select>
+        </div>
+    </div>
+
     <section class="card border-0 shadow-sm">
         <div class="card-body p-0">
             <div class="table-responsive">
@@ -44,6 +85,9 @@
                     <tr><td colspan="7" class="text-center text-secondary py-4">Đang tải dữ liệu...</td></tr>
                     </tbody>
                 </table>
+            </div>
+            <div class="border-top px-4 py-3">
+                <div id="AccountPagination" class="d-flex flex-wrap justify-content-between align-items-center gap-2"></div>
             </div>
         </div>
     </section>
@@ -109,8 +153,9 @@
     </div>
 </footer>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/Asset/Security/AuthToken.js"></script>
 <script src="/Asset/Admin/AdminNavigation.js"></script>
-<script src="/Asset/Security/Csrf.js"></script>
+<script src="/Asset/Admin/AdminPagination.js"></script>
 <script src="/Asset/Admin/Account.js"></script>
 </body>
 </html>

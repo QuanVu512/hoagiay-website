@@ -3,13 +3,18 @@ package com.hoagiayphudong.service;
 import com.hoagiayphudong.dto.ManagerOptionResponse;
 import com.hoagiayphudong.dto.ManagerRequest;
 import com.hoagiayphudong.dto.ManagerResponse;
+import com.hoagiayphudong.dto.PageResponse;
 import com.hoagiayphudong.helper.exception.ResourceNotFoundException;
+import com.hoagiayphudong.helper.pagination.PageableHelper;
+import com.hoagiayphudong.helper.specification.ManagerSpecification;
 import com.hoagiayphudong.model.Department;
 import com.hoagiayphudong.model.Manager;
 import com.hoagiayphudong.repository.DepartmentRepository;
 import com.hoagiayphudong.repository.ManagerRepository;
 import com.hoagiayphudong.security.SecurityPermission;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,11 +30,12 @@ public class ManagerService {
 
     @PreAuthorize(SecurityPermission.ADMIN)
     @Transactional(readOnly = true)
-    public List<ManagerResponse> findAll() {
-        return managerRepository.findAllByOrderByIdAsc()
-                .stream()
-                .map(ManagerResponse::from)
-                .toList();
+    public PageResponse<ManagerResponse> findAll(Pageable pageable, String keyword, Long departmentId, Boolean hasAccount) {
+        Pageable safePageable = PageableHelper.normalize(pageable, Sort.by(Sort.Direction.ASC, "id"));
+        return PageResponse.from(
+                managerRepository.findAll(ManagerSpecification.filter(keyword, departmentId, hasAccount), safePageable),
+                ManagerResponse::from
+        );
     }
 
     @PreAuthorize(SecurityPermission.ADMIN)

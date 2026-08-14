@@ -3,16 +3,22 @@ package com.hoagiayphudong.repository;
 import com.hoagiayphudong.model.Manager;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ManagerRepository extends JpaRepository<Manager, Long> {
+public interface ManagerRepository extends JpaRepository<Manager, Long>, JpaSpecificationExecutor<Manager> {
 
     @EntityGraph(attributePaths = {"user", "department"})
     List<Manager> findAllByOrderByIdAsc();
+
+    @EntityGraph(attributePaths = {"user", "department"})
+    Page<Manager> findAllBy(Pageable pageable);
 
     @Query("select m from Manager m where m.user is null order by m.id")
     List<Manager> findManagersWithoutAccount();
@@ -28,6 +34,9 @@ public interface ManagerRepository extends JpaRepository<Manager, Long> {
             order by user.id
             """)
     List<Manager> findManagersWithAccount();
+
+    @EntityGraph(attributePaths = {"user", "department"})
+    Page<Manager> findByUserIsNotNull(Pageable pageable);
 
     @Query("""
             select distinct m

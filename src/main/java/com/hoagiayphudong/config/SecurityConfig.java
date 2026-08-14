@@ -1,86 +1,96 @@
 package com.hoagiayphudong.config;
 
-
+import com.hoagiayphudong.helper.exception.CustomAccessDeniedHandler;
+import com.hoagiayphudong.helper.exception.CustomAuthenticationEntryPoint;
+import com.hoagiayphudong.helper.path.SecurityPath;
 import com.hoagiayphudong.service.UserService;
-import jakarta.servlet.http.HttpServletResponse;
-import java.nio.charset.StandardCharsets;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
+import org.springframework.security.oauth2.server.resource.web.BearerTokenResolver;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.web.csrf.CsrfFilter;
-import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
-import org.springframework.util.StreamUtils;
 
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
 
     @Bean
-    PasswordEncoder passwordEncoder(){
+    PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
     @Bean
-    UserDetailsService userDetailsService(UserService userService){
+    UserDetailsService userDetailsService(UserService userService) {
         return new CustomUserDetailsService(userService);
     }
 
     @Bean
     SecurityFilterChain securityFilterChain(
             HttpSecurity http,
-            UserDetailsService userDetailsService,
-            @Value("${app.security.remember-me-key}") String rememberMeKey
+            JwtAuthenticationConverter jwtAuthenticationConverter,
+            BearerTokenResolver bearerTokenResolver,
+            CustomAuthenticationEntryPoint customAuthenticationEntryPoint,
+            CustomAccessDeniedHandler customAccessDeniedHandler
     ) throws Exception {
-        CsrfTokenRequestAttributeHandler csrfRequestHandler = new CsrfTokenRequestAttributeHandler();
 
         return http
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(Customizer.withDefaults())
+                .formLogin(AbstractHttpConfigurer::disable)
+                .logout(AbstractHttpConfigurer::disable)
+                .rememberMe(AbstractHttpConfigurer::disable)
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/", "/index.html", "/assets/**", "/Asset/**", "/Security/**", "/error/**", "/login", "/register", "/notfound", "/error").permitAll()
-                        .requestMatchers("/api/session").permitAll()
-                        .requestMatchers("/Admin/**").hasAuthority("ADMIN")
-                        .requestMatchers("/admin/**", "/api/**").authenticated()
+                        .requestMatchers(SecurityPath.SWAGGER_WHITELIST).permitAll()
+                        .requestMatchers(SecurityPath.PAGE_WHITELIST).permitAll()
+                        .requestMatchers(SecurityPath.AUTH_WHITELIST).permitAll()
+                        .requestMatchers(HttpMethod.GET, SecurityPath.PUBLIC_GET_API_WHITELIST).permitAll()
+                        .requestMatchers("/admin/account", "/admin/department", "/admin/manager").hasAuthority("ADMIN")
+                        .requestMatchers("/admin/article").hasAnyAuthority("ADMIN", "ARTICLE")
+                        .requestMatchers("/admin/product").hasAnyAuthority("ADMIN", "PRODUCT")
+                        .requestMatchers("/admin/category").hasAnyAuthority("ADMIN", "CATEGORY")
+                        .requestMatchers(SecurityPath.ADMIN_PAGE_WHITELIST).authenticated()
+                        .requestMatchers("/api/**").authenticated()
                         .anyRequest().authenticated()
                 )
-                .csrf(csrf -> csrf
-                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                        .csrfTokenRequestHandler(csrfRequestHandler)
-                )
-                .addFilterAfter(new CsrfCookieFilter(), CsrfFilter.class)
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .loginProcessingUrl("/login")
-                        .defaultSuccessUrl("/admin/account", true)
-                        .permitAll()
-                )
-                .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout")
-                        .deleteCookies("SESSION", "JSESSIONID", "remember-me")
-                        .permitAll()
-                )
-                .rememberMe(rememberMe -> rememberMe
-                        .rememberMeParameter("remember-me")
-                        .rememberMeCookieName("remember-me")
-                        .key(rememberMeKey)
-                        .tokenValiditySeconds(7 * 24 * 60 * 60)
-                        .userDetailsService(userDetailsService)
+                .oauth2ResourceServer(oauth2 -> oauth2
+                        .bearerTokenResolver(bearerTokenResolver)
+                        .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter))
                 )
                 .exceptionHandling(exception -> exception
-                        .accessDeniedHandler((request, response, accessDeniedException) -> {
-                            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                            response.setCharacterEncoding(StandardCharsets.UTF_8.name());
-                            response.setContentType("text/html;charset=UTF-8");
-                            ClassPathResource denyPage = new ClassPathResource("static/Security/Deny.html");
-                            StreamUtils.copy(denyPage.getInputStream(), response.getOutputStream());
-                        })
+                        .authenticationEntryPoint(customAuthenticationEntryPoint)
+                        .accessDeniedHandler(customAccessDeniedHandler)
                 )
                 .build();
     }
+
+    @Bean
+    AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    @Bean
+    JwtAuthenticationConverter jwtAuthenticationConverter() {
+        JwtGrantedAuthoritiesConverter authoritiesConverter = new JwtGrantedAuthoritiesConverter();
+        authoritiesConverter.setAuthoritiesClaimName("roles");
+        authoritiesConverter.setAuthorityPrefix("");
+
+        JwtAuthenticationConverter authenticationConverter = new JwtAuthenticationConverter();
+        authenticationConverter.setJwtGrantedAuthoritiesConverter(authoritiesConverter);
+        return authenticationConverter;
+    }
+
 }

@@ -2,14 +2,20 @@ package com.hoagiayphudong.service;
 
 import java.util.List;
 
+import com.hoagiayphudong.helper.exception.ResourceAlreadyExistsException;
 import com.hoagiayphudong.helper.exception.ResourceNotFoundException;
 import com.hoagiayphudong.dto.DepartmentRequest;
 import com.hoagiayphudong.dto.DepartmentResponse;
+import com.hoagiayphudong.dto.PageResponse;
+import com.hoagiayphudong.helper.pagination.PageableHelper;
+import com.hoagiayphudong.helper.specification.DepartmentSpecification;
 import com.hoagiayphudong.model.Department;
 import com.hoagiayphudong.repository.DepartmentRepository;
 import com.hoagiayphudong.repository.ManagerRepository;
 import com.hoagiayphudong.security.SecurityPermission;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +29,17 @@ public class DepartmentService {
 
     @PreAuthorize(SecurityPermission.ADMIN)
     @Transactional(readOnly = true)
-    public List<DepartmentResponse> findAll() {
+    public PageResponse<DepartmentResponse> findAll(Pageable pageable, String keyword, Boolean active) {
+        Pageable safePageable = PageableHelper.normalize(pageable, Sort.by(Sort.Direction.ASC, "id"));
+        return PageResponse.from(
+                departmentRepository.findAll(DepartmentSpecification.filter(keyword, active), safePageable),
+                DepartmentResponse::from
+        );
+    }
+
+    @PreAuthorize(SecurityPermission.ADMIN)
+    @Transactional(readOnly = true)
+    public List<DepartmentResponse> findAllOptions() {
         return departmentRepository.findAllByOrderByIdAsc()
                 .stream()
                 .map(DepartmentResponse::from)
@@ -87,7 +103,7 @@ public class DepartmentService {
                 : departmentRepository.existsByNameIgnoreCaseAndIdNot(name, ignoredDepartmentId);
 
         if (exists) {
-            throw new IllegalArgumentException("Tên bộ phận đã tồn tại.");
+            throw new ResourceAlreadyExistsException("Tên bộ phận đã tồn tại.");
         }
     }
 

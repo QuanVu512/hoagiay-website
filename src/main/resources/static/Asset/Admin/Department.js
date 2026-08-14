@@ -2,6 +2,11 @@ const ApiUrl = '/api/department';
 
 const State = {
     Departments: [],
+    Page: 0,
+    Size: 10,
+    Sort: 'id,asc',
+    Filters: {},
+    PageData: null,
     EditingId: null
 };
 
@@ -12,14 +17,27 @@ const AlertBox = document.getElementById('AlertBox');
 
 document.getElementById('AddDepartmentButton').addEventListener('click', OpenCreateModal);
 DepartmentForm.addEventListener('submit', SaveDepartment);
+BindAdminListControls('DepartmentSort', 'DepartmentSize', State, LoadDepartments);
+BindAdminFilterControls({
+    searchId: 'DepartmentKeyword',
+    applyButtonId: 'DepartmentSearchButton',
+    resetButtonId: 'DepartmentResetButton',
+    filters: [
+        { id: 'DepartmentActiveFilter', key: 'active' }
+    ]
+}, State, LoadDepartments);
 
 LoadDepartments();
 
 async function LoadDepartments() {
     try {
-        const Result = await ApiRequest(ApiUrl);
-        State.Departments = Result.data;
+        const Result = await ApiRequest(BuildAdminPageUrl(ApiUrl, State));
+        ApplyAdminPage(State, 'Departments', Result.data);
         RenderDepartments();
+        RenderAdminPagination('DepartmentPagination', State.PageData, Page => {
+            State.Page = Page;
+            LoadDepartments();
+        });
     } catch (Error) {
         ShowAlert(Error.message, 'danger');
         RenderDepartments();
@@ -28,31 +46,30 @@ async function LoadDepartments() {
 
 async function ApiRequest(Url, Options = {}) {
     const Response = await fetch(Url, {
+        ...Options,
+        credentials: 'same-origin',
         headers: {
             'Content-Type': 'application/json',
-            ...BuildCsrfHeader(),
+            ...BuildAuthHeader(),
             ...(Options.headers || {})
-        },
-        ...Options
+        }
     });
     const Payload = await Response.json().catch(() => ({}));
+
+    if (Response.status === 401) {
+        RedirectToLogin();
+        throw new Error('Can dang nhap lai.');
+    }
+    if (Response.status === 403) {
+        window.location.href = '/notfound';
+        throw new Error('Khong co quyen truy cap.');
+    }
 
     if (!Response.ok) {
         throw new Error(Payload.message || 'Không thể xử lý yêu cầu.');
     }
 
     return Payload;
-}
-
-function BuildCsrfHeader() {
-    const Token = document.cookie
-        .split('; ')
-        .find(Item => Item.startsWith('XSRF-TOKEN='))
-        ?.split('=')
-        .slice(1)
-        .join('=');
-
-    return Token ? { 'X-XSRF-TOKEN': decodeURIComponent(Token) } : {};
 }
 
 function RenderDepartments() {

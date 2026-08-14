@@ -8,25 +8,12 @@ const userActions = document.querySelector("#UserActions");
 const sessionUsername = document.querySelector("#SessionUsername");
 const adminLink = document.querySelector("#AdminLink");
 
-function readCookie(name) {
-    return document.cookie
-        .split("; ")
-        .find((item) => item.startsWith(`${name}=`))
-        ?.split("=")
-        .slice(1)
-        .join("=") || "";
-}
-
-function buildCsrfHeader() {
-    const token = readCookie("XSRF-TOKEN");
-    return token ? { "X-XSRF-TOKEN": decodeURIComponent(token) } : {};
-}
-
 async function fetchJson(url, options) {
     const response = await fetch(url, {
         ...(options || {}),
+        credentials: "same-origin",
         headers: {
-            ...buildCsrfHeader(),
+            ...BuildAuthHeader(),
             ...(options?.headers || {})
         }
     });
@@ -42,14 +29,16 @@ async function fetchJson(url, options) {
 
 async function loadSession() {
     try {
-        const response = await fetchJson("/api/session");
-        const session = response.data;
+        const response = await fetchJson("/api/auth/account");
+        const account = response.data;
 
-        guestActions.classList.toggle("d-none", session.loggedIn);
-        userActions.classList.toggle("d-none", !session.loggedIn);
-        sessionUsername.textContent = session.username || "";
-        adminLink.classList.toggle("d-none", !session.admin);
+        guestActions.classList.add("d-none");
+        userActions.classList.remove("d-none");
+        sessionUsername.textContent = account.username || "";
+        adminLink.href = account.managementPath || "/admin/account";
+        adminLink.classList.toggle("d-none", !account.managementPath);
     } catch (error) {
+        ClearAuthTokens();
         guestActions.classList.remove("d-none");
         userActions.classList.add("d-none");
     }
@@ -78,14 +67,16 @@ function renderProducts(products) {
 
     productList.innerHTML = products
         .map((product) => `
-            <article class="card">
-                <img src="${product.thumbnailUrl || "/assets/images/product-placeholder.svg"}" alt="${product.name}">
-                <div class="card-body">
-                    <h3>${product.name}</h3>
-                    <p>${product.shortDescription || ""}</p>
-                    <p class="meta">${product.priceLabel || "Liên hệ"}</p>
-                </div>
-            </article>
+            <div class="col">
+                <article class="card h-100">
+                    <img src="${product.thumbnailUrl || "/assets/images/product-placeholder.svg"}" alt="${EscapeHtml(product.name)}">
+                    <div class="card-body">
+                        <h3>${EscapeHtml(product.name)}</h3>
+                        <p>${EscapeHtml(product.shortDescription || "")}</p>
+                        <p class="meta">${EscapeHtml(product.priceLabel || "Liên hệ")}</p>
+                    </div>
+                </article>
+            </div>
         `)
         .join("");
 }
@@ -98,13 +89,15 @@ function renderArticles(articles) {
 
     articleList.innerHTML = articles
         .map((article) => `
-            <article class="card">
-                <img src="${article.thumbnailUrl || "/assets/images/article-placeholder.svg"}" alt="${article.title}">
-                <div class="card-body">
-                    <h3>${article.title}</h3>
-                    <p>${article.summary || ""}</p>
-                </div>
-            </article>
+            <div class="col">
+                <article class="card h-100">
+                    <img src="${article.thumbnailUrl || "/assets/images/article-placeholder.svg"}" alt="${EscapeHtml(article.title)}">
+                    <div class="card-body">
+                        <h3>${EscapeHtml(article.title)}</h3>
+                        <p>${EscapeHtml(article.summary || "")}</p>
+                    </div>
+                </article>
+            </div>
         `)
         .join("");
 }
@@ -112,13 +105,13 @@ function renderArticles(articles) {
 async function loadHomeData() {
     const [categories, products, articles] = await Promise.all([
         fetchJson("/api/categories"),
-        fetchJson("/api/products?featured=true"),
-        fetchJson("/api/articles")
+        fetchJson("/api/products?featured=true&page=0&size=4&sort=id,desc"),
+        fetchJson("/api/articles?page=0&size=2&sort=publishedAt,desc&sort=id,desc")
     ]);
 
     renderCategories(categories);
-    renderProducts(products);
-    renderArticles(articles);
+    renderProducts(products.content || []);
+    renderArticles(articles.content || []);
 }
 
 contactForm.addEventListener("submit", async (event) => {

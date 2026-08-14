@@ -1,12 +1,10 @@
 package com.hoagiayphudong.controller;
 
-import com.hoagiayphudong.security.SecurityPermission;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -18,38 +16,42 @@ public class AdminPageController {
         return okHtml("index.html");
     }
 
+    @GetMapping("/products")
+    public ResponseEntity<Resource> publicProductsPage() {
+        return okHtml("Product.html");
+    }
+
+    @GetMapping("/articles")
+    public ResponseEntity<Resource> publicArticlesPage() {
+        return okHtml("Article.html");
+    }
+
     @GetMapping("/admin/account")
-    @PreAuthorize(SecurityPermission.ADMIN)
     public ResponseEntity<Resource> employeeAccountsPage() {
         return okHtml("Admin/Account.html");
     }
 
     @GetMapping("/admin/department")
-    @PreAuthorize(SecurityPermission.ADMIN)
     public ResponseEntity<Resource> departmentsPage() {
         return okHtml("Admin/Department.html");
     }
 
     @GetMapping("/admin/manager")
-    @PreAuthorize(SecurityPermission.ADMIN)
     public ResponseEntity<Resource> managersPage() {
         return okHtml("Admin/Manager.html");
     }
 
     @GetMapping("/admin/article")
-    @PreAuthorize(SecurityPermission.ADMIN)
     public ResponseEntity<Resource> articlesPage() {
         return okHtml("Admin/Article.html");
     }
 
     @GetMapping("/admin/product")
-    @PreAuthorize(SecurityPermission.ADMIN)
     public ResponseEntity<Resource> productsPage() {
         return okHtml("Admin/Product.html");
     }
 
     @GetMapping("/admin/category")
-    @PreAuthorize(SecurityPermission.ADMIN)
     public ResponseEntity<Resource> categoriesPage() {
         return okHtml("Admin/Category.html");
     }

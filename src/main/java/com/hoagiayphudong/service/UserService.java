@@ -5,11 +5,15 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
-import com.hoagiayphudong.helper.exception.ResourceNotFoundException;
 import com.hoagiayphudong.dto.EmployeeAccountCreateRequest;
 import com.hoagiayphudong.dto.EmployeeAccountResponse;
 import com.hoagiayphudong.dto.EmployeeAccountUpdateRequest;
+import com.hoagiayphudong.dto.PageResponse;
 import com.hoagiayphudong.dto.RoleOptionResponse;
+import com.hoagiayphudong.helper.exception.ResourceAlreadyExistsException;
+import com.hoagiayphudong.helper.exception.ResourceNotFoundException;
+import com.hoagiayphudong.helper.pagination.PageableHelper;
+import com.hoagiayphudong.helper.specification.AccountSpecification;
 import com.hoagiayphudong.model.Manager;
 import com.hoagiayphudong.model.Role;
 import com.hoagiayphudong.model.User;
@@ -18,6 +22,8 @@ import com.hoagiayphudong.repository.RoleRepository;
 import com.hoagiayphudong.repository.UserRepository;
 import com.hoagiayphudong.security.SecurityPermission;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -33,11 +39,12 @@ public class UserService {
 
     @PreAuthorize(SecurityPermission.ADMIN)
     @Transactional(readOnly = true)
-    public List<EmployeeAccountResponse> findAllAccounts() {
-        return managerRepository.findManagersWithAccount()
-                .stream()
-                .map(EmployeeAccountResponse::from)
-                .toList();
+    public PageResponse<EmployeeAccountResponse> findAllAccounts(Pageable pageable, String keyword, Long roleId, Boolean active) {
+        Pageable safePageable = PageableHelper.normalize(pageable, Sort.by(Sort.Direction.ASC, "id"));
+        return PageResponse.from(
+                managerRepository.findAll(AccountSpecification.filter(keyword, roleId, active), safePageable),
+                EmployeeAccountResponse::from
+        );
     }
 
     @PreAuthorize(SecurityPermission.ADMIN)
@@ -62,7 +69,7 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy hồ sơ nhân viên id " + request.managerId()));
 
         if (manager.getUser() != null) {
-            throw new IllegalStateException("Hồ sơ nhân viên này đã có tài khoản.");
+            throw new ResourceAlreadyExistsException("Hồ sơ nhân viên này đã có tài khoản.");
         }
 
         validateUniqueUsername(cleanText(request.username()), null);
@@ -133,7 +140,7 @@ public class UserService {
                 : userRepository.existsByUsernameAndIdNot(username, ignoredUserId);
 
         if (exists) {
-            throw new IllegalArgumentException("Tên đăng nhập đã tồn tại.");
+            throw new ResourceAlreadyExistsException("Tên đăng nhập đã tồn tại.");
         }
     }
 
@@ -143,7 +150,7 @@ public class UserService {
                 : userRepository.existsByEmailAndIdNot(email, ignoredUserId);
 
         if (exists) {
-            throw new IllegalArgumentException("Email đã tồn tại.");
+            throw new ResourceAlreadyExistsException("Email đã tồn tại.");
         }
     }
 
@@ -181,6 +188,7 @@ public class UserService {
         String trimmed = value.trim();
         return trimmed.isEmpty() ? null : trimmed;
     }
+
     @Transactional(readOnly = true)
     public Optional<User> findAccountByUsernameOrEmail(String loginName) {
         return userRepository.findByUsernameOrEmail(loginName, loginName);

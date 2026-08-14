@@ -1,27 +1,36 @@
 const AdminNavigationItems = [
-    { href: '/admin/account', label: 'Tài khoản', icon: 'bi-person-gear' },
-    { href: '/admin/manager', label: 'Nhân viên', icon: 'bi-people' },
-    { href: '/admin/department', label: 'Bộ phận', icon: 'bi-diagram-3' },
-    { href: '/admin/article', label: 'Bài viết', icon: 'bi-newspaper' },
-    { href: '/admin/product', label: 'Sản phẩm', icon: 'bi-flower1' },
-    { href: '/admin/category', label: 'Danh mục', icon: 'bi-tags' }
+    { href: '/admin/account', label: 'Tài khoản', icon: 'bi-person-gear', roles: ['ADMIN'] },
+    { href: '/admin/manager', label: 'Nhân viên', icon: 'bi-people', roles: ['ADMIN'] },
+    { href: '/admin/department', label: 'Bộ phận', icon: 'bi-diagram-3', roles: ['ADMIN'] },
+    { href: '/admin/article', label: 'Bài viết', icon: 'bi-newspaper', roles: ['ADMIN', 'ARTICLE'] },
+    { href: '/admin/product', label: 'Sản phẩm', icon: 'bi-flower1', roles: ['ADMIN', 'PRODUCT'] },
+    { href: '/admin/category', label: 'Danh mục', icon: 'bi-tags', roles: ['ADMIN', 'CATEGORY'] }
 ];
 
-function RenderAdminNavigation() {
+async function RenderAdminNavigation() {
     const Container = document.getElementById('AdminNavigation');
     if (!Container) {
         return;
     }
 
+    const Roles = await LoadCurrentRoles();
     const CurrentPath = window.location.pathname;
-    const Links = AdminNavigationItems.map(Item => `
-        <li class="nav-item">
-            <a class="nav-link ${CurrentPath === Item.href ? 'active' : ''}" href="${Item.href}">
-                <i class="bi ${Item.icon}"></i>
-                <span>${Item.label}</span>
-            </a>
-        </li>
-    `).join('');
+    const CurrentItem = AdminNavigationItems.find(Item => Item.href === CurrentPath);
+    if (CurrentItem && !CanSeeItem(CurrentItem, Roles)) {
+        window.location.href = '/notfound';
+        return;
+    }
+
+    const Links = AdminNavigationItems
+        .filter(Item => CanSeeItem(Item, Roles))
+        .map(Item => `
+            <li class="nav-item">
+                <a class="nav-link ${CurrentPath === Item.href ? 'active' : ''}" href="${Item.href}">
+                    <i class="bi ${Item.icon}"></i>
+                    <span>${Item.label}</span>
+                </a>
+            </li>
+        `).join('');
 
     Container.innerHTML = `
         <nav class="navbar navbar-expand-xl navbar-dark shadow-sm admin-navbar">
@@ -35,19 +44,44 @@ function RenderAdminNavigation() {
                     <ul class="navbar-nav ms-auto align-items-xl-center admin-nav-actions">
                         ${Links}
                         <li class="nav-item ms-xl-2">
-                            <form action="/logout" method="post">
-                                <input data-csrf-token name="_csrf" type="hidden">
-                                <button class="btn btn-outline-light btn-sm" type="submit">
+                            <button class="btn btn-outline-light btn-sm" type="button" onclick="LogoutJwt()">
                                     <i class="bi bi-box-arrow-right"></i>
                                     <span>Đăng xuất</span>
-                                </button>
-                            </form>
+                            </button>
                         </li>
                     </ul>
                 </div>
             </div>
         </nav>
     `;
+}
+
+async function LoadCurrentRoles() {
+    try {
+        const Response = await fetch('/api/auth/account', {
+            credentials: 'same-origin',
+            headers: BuildAuthHeader()
+        });
+        if (Response.status === 401) {
+            RedirectToLogin();
+            return [];
+        }
+        if (Response.status === 403) {
+            window.location.href = '/notfound';
+            return [];
+        }
+
+        const Payload = await Response.json();
+        const Data = Payload.data || {};
+        return Data.roles || [];
+    } catch (Error) {
+        RedirectToLogin();
+        return [];
+    }
+}
+
+function CanSeeItem(Item, Roles) {
+    return Item.roles.some(Role => Roles.includes(Role));
 }
 
 RenderAdminNavigation();

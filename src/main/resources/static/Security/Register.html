@@ -11,10 +11,12 @@
 <main class="login-shell">
     <section class="login-panel shadow-sm register-panel">
         <h1 class="h4 fw-bold mb-1">Đăng ký tài khoản</h1>
-        <p class="text-secondary mb-4">Giao diện mẫu cho bước đăng ký. Phần xử lý backend có thể nối sau.</p>
+        <p class="text-secondary mb-4">Tạo tài khoản khách hàng để theo dõi và mua sản phẩm hoa giấy.</p>
+
+        <div id="RegisterError" class="alert alert-danger d-none"></div>
+        <div id="RegisterSuccess" class="alert alert-success d-none"></div>
 
         <form id="RegisterForm">
-            <input data-csrf-token name="_csrf" type="hidden">
             <div class="row g-3">
                 <div class="col-12">
                     <label class="form-label fw-medium" for="fullName">Họ tên</label>
@@ -40,12 +42,8 @@
                     <label class="form-label fw-medium" for="phone">Số điện thoại</label>
                     <input class="form-control" id="phone" name="phone" type="tel" maxlength="30">
                 </div>
-                <div class="col-md-6">
-                    <label class="form-label fw-medium" for="department">Bộ phận</label>
-                    <input class="form-control" id="department" name="department" type="text" maxlength="80">
-                </div>
             </div>
-            <button class="btn btn-success w-100 mt-4" type="button">Đăng ký</button>
+            <button class="btn btn-success w-100 mt-4" id="RegisterButton" type="submit">Đăng ký</button>
         </form>
 
         <div class="text-center mt-3">
@@ -53,6 +51,52 @@
         </div>
     </section>
 </main>
-<script src="/Asset/Security/Csrf.js"></script>
+<script src="/Asset/Security/AuthToken.js"></script>
+<script>
+    const RegisterForm = document.getElementById('RegisterForm');
+    const RegisterButton = document.getElementById('RegisterButton');
+    const RegisterError = document.getElementById('RegisterError');
+    const RegisterSuccess = document.getElementById('RegisterSuccess');
+
+    RegisterForm.addEventListener('submit', async (Event) => {
+        Event.preventDefault();
+        RegisterButton.disabled = true;
+        RegisterButton.textContent = 'Đang đăng ký...';
+        RegisterError.classList.add('d-none');
+        RegisterSuccess.classList.add('d-none');
+
+        try {
+            const Response = await fetch('/api/auth/register', {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    fullName: document.getElementById('fullName').value.trim(),
+                    username: document.getElementById('username').value.trim(),
+                    email: document.getElementById('email').value.trim(),
+                    password: document.getElementById('password').value,
+                    confirmPassword: document.getElementById('confirmPassword').value,
+                    phone: document.getElementById('phone').value.trim()
+                })
+            });
+            const Payload = await Response.json().catch(() => ({}));
+
+            if (!Response.ok) {
+                throw new Error(Payload.message || 'Không thể đăng ký tài khoản.');
+            }
+
+            ClearAuthTokens();
+            RegisterSuccess.textContent = Payload.message || 'Đăng ký thành công.';
+            RegisterSuccess.classList.remove('d-none');
+            window.location.href = '/';
+        } catch (Error) {
+            RegisterError.textContent = Error.message;
+            RegisterError.classList.remove('d-none');
+        } finally {
+            RegisterButton.disabled = false;
+            RegisterButton.textContent = 'Đăng ký';
+        }
+    });
+</script>
 </body>
 </html>

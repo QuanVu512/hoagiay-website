@@ -1,13 +1,13 @@
 package com.hoagiayphudong.controller;
 
-import java.util.List;
-
 import com.hoagiayphudong.helper.response.ApiResponse;
 import com.hoagiayphudong.dto.ManagerRequest;
 import com.hoagiayphudong.dto.ManagerResponse;
+import com.hoagiayphudong.dto.PageResponse;
 import com.hoagiayphudong.service.ManagerService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,8 +19,13 @@ public class ManagerController {
     private final ManagerService managerService;
 
     @GetMapping
-    public ApiResponse<List<ManagerResponse>> findAll() {
-        return ApiResponse.success("Lấy danh sách hồ sơ nhân viên thành công", managerService.findAll());
+    public ApiResponse<PageResponse<ManagerResponse>> findAll(
+            Pageable pageable,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) Long departmentId,
+            @RequestParam(required = false) Boolean hasAccount
+    ) {
+        return ApiResponse.success("Lấy danh sách hồ sơ nhân viên thành công", managerService.findAll(pageable, keyword, departmentId, hasAccount));
     }
 
     @GetMapping("/{id}")

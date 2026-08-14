@@ -13,35 +13,90 @@
         <h1 class="h4 fw-bold mb-1">Đăng nhập quản trị</h1>
         <p class="text-secondary mb-4">Dùng tài khoản nhân viên đã được cấp trong hệ thống.</p>
 
-        <div id="LoginError" class="alert alert-danger d-none">Tên đăng nhập, email hoặc mật khẩu chưa đúng.</div>
+        <div id="LoginError" class="alert alert-danger d-none"></div>
         <div id="LogoutSuccess" class="alert alert-success d-none">Bạn đã đăng xuất.</div>
 
-        <form action="/login" method="post">
-            <input data-csrf-token name="_csrf" type="hidden">
+        <form id="LoginForm">
             <div class="mb-3">
                 <label class="form-label fw-medium" for="username">Tên đăng nhập hoặc email</label>
                 <input class="form-control" id="username" name="username" required type="text" autocomplete="username">
             </div>
-            <div class="mb-3">
+            <div class="mb-4">
                 <label class="form-label fw-medium" for="password">Mật khẩu</label>
                 <input class="form-control" id="password" name="password" required type="password" autocomplete="current-password">
             </div>
-            <div class="form-check mb-4">
-                <input class="form-check-input" id="RememberMe" name="remember-me" type="checkbox">
-                <label class="form-check-label" for="RememberMe">Ghi nhớ đăng nhập</label>
-            </div>
-            <button class="btn btn-success w-100" type="submit">Đăng nhập</button>
+            <button class="btn btn-success w-100" id="LoginButton" type="submit">Đăng nhập</button>
         </form>
         <div class="text-center mt-3">
             <a href="/register" class="auth-link">Tạo giao diện đăng ký</a>
         </div>
     </section>
 </main>
-<script src="/Asset/Security/Csrf.js"></script>
+<script src="/Asset/Security/AuthToken.js"></script>
 <script>
     const Params = new URLSearchParams(window.location.search);
-    document.getElementById('LoginError').classList.toggle('d-none', !Params.has('error'));
-    document.getElementById('LogoutSuccess').classList.toggle('d-none', !Params.has('logout'));
+    const LoginError = document.getElementById('LoginError');
+    const LogoutSuccess = document.getElementById('LogoutSuccess');
+    const LoginButton = document.getElementById('LoginButton');
+
+    LogoutSuccess.classList.toggle('d-none', !Params.has('logout'));
+    if (Params.has('error')) {
+        ShowLoginError('Vui lòng đăng nhập bằng tài khoản có quyền truy cập.');
+    }
+
+    document.getElementById('LoginForm').addEventListener('submit', async (Event) => {
+        Event.preventDefault();
+        LoginButton.disabled = true;
+        LoginButton.textContent = 'Đang đăng nhập...';
+        LoginError.classList.add('d-none');
+
+        try {
+            const Response = await fetch('/api/auth/login', {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    username: document.getElementById('username').value.trim(),
+                    password: document.getElementById('password').value
+                })
+            });
+            const Payload = await Response.json().catch(() => ({}));
+
+            if (!Response.ok) {
+                throw new Error(Payload.message || 'Tên đăng nhập hoặc mật khẩu chưa đúng.');
+            }
+
+            ClearAuthTokens();
+            window.location.href = FindManagementPath(Payload.data.roles || []);
+        } catch (Error) {
+            ShowLoginError(Error.message);
+        } finally {
+            LoginButton.disabled = false;
+            LoginButton.textContent = 'Đăng nhập';
+        }
+    });
+
+    function FindManagementPath(Roles) {
+        if (Roles.includes('ADMIN')) {
+            return '/admin/account';
+        }
+        if (Roles.includes('ARTICLE')) {
+            return '/admin/article';
+        }
+        if (Roles.includes('PRODUCT')) {
+            return '/admin/product';
+        }
+        if (Roles.includes('CATEGORY')) {
+            return '/admin/category';
+        }
+
+        return '/';
+    }
+
+    function ShowLoginError(Message) {
+        LoginError.textContent = Message;
+        LoginError.classList.remove('d-none');
+    }
 </script>
 </body>
 </html>

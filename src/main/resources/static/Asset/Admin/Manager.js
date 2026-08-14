@@ -1,9 +1,14 @@
 const ApiUrl = '/api/manager';
-const DepartmentUrl = '/api/department';
+const DepartmentUrl = '/api/department/option';
 
 const State = {
     Managers: [],
     Departments: [],
+    Page: 0,
+    Size: 10,
+    Sort: 'id,asc',
+    Filters: {},
+    PageData: null,
     EditingId: null
 };
 
@@ -14,19 +19,34 @@ const AlertBox = document.getElementById('AlertBox');
 
 document.getElementById('AddManagerButton').addEventListener('click', OpenCreateModal);
 ManagerForm.addEventListener('submit', SaveManager);
+BindAdminListControls('ManagerSort', 'ManagerSize', State, LoadManagers);
+BindAdminFilterControls({
+    searchId: 'ManagerKeyword',
+    applyButtonId: 'ManagerSearchButton',
+    resetButtonId: 'ManagerResetButton',
+    filters: [
+        { id: 'ManagerDepartmentFilter', key: 'departmentId' },
+        { id: 'ManagerHasAccountFilter', key: 'hasAccount' }
+    ]
+}, State, LoadManagers);
 
 LoadManagers();
 
 async function LoadManagers() {
     try {
         const [ManagersResult, DepartmentsResult] = await Promise.all([
-            ApiRequest(ApiUrl),
+            ApiRequest(BuildAdminPageUrl(ApiUrl, State)),
             ApiRequest(DepartmentUrl)
         ]);
 
-        State.Managers = ManagersResult.data;
+        ApplyAdminPage(State, 'Managers', ManagersResult.data);
         State.Departments = DepartmentsResult.data;
         RenderManagers();
+        RenderAdminPagination('ManagerPagination', State.PageData, Page => {
+            State.Page = Page;
+            LoadManagers();
+        });
+        RenderDepartmentFilterOptions();
         RenderDepartmentOptions();
     } catch (Error) {
         ShowAlert(Error.message, 'danger');
@@ -36,31 +56,30 @@ async function LoadManagers() {
 
 async function ApiRequest(Url, Options = {}) {
     const Response = await fetch(Url, {
+        ...Options,
+        credentials: 'same-origin',
         headers: {
             'Content-Type': 'application/json',
-            ...BuildCsrfHeader(),
+            ...BuildAuthHeader(),
             ...(Options.headers || {})
-        },
-        ...Options
+        }
     });
     const Payload = await Response.json().catch(() => ({}));
+
+    if (Response.status === 401) {
+        RedirectToLogin();
+        throw new Error('Can dang nhap lai.');
+    }
+    if (Response.status === 403) {
+        window.location.href = '/notfound';
+        throw new Error('Khong co quyen truy cap.');
+    }
 
     if (!Response.ok) {
         throw new Error(Payload.message || 'Không thể xử lý yêu cầu.');
     }
 
     return Payload;
-}
-
-function BuildCsrfHeader() {
-    const Token = document.cookie
-        .split('; ')
-        .find(Item => Item.startsWith('XSRF-TOKEN='))
-        ?.split('=')
-        .slice(1)
-        .join('=');
-
-    return Token ? { 'X-XSRF-TOKEN': decodeURIComponent(Token) } : {};
 }
 
 function RenderManagers() {
@@ -107,6 +126,19 @@ function RenderDepartmentOptions(SelectedId = '') {
     `).join('');
 
     document.getElementById('DepartmentId').innerHTML = '<option value="">Chọn bộ phận...</option>' + Options;
+}
+
+function RenderDepartmentFilterOptions() {
+    const FilterSelect = document.getElementById('ManagerDepartmentFilter');
+    if (!FilterSelect) {
+        return;
+    }
+
+    const CurrentValue = FilterSelect.value;
+    FilterSelect.innerHTML = '<option value="">Tất cả bộ phận</option>' + State.Departments.map(Department => `
+        <option value="${Department.id}">${EscapeHtml(Department.name)}${Department.active ? '' : ' (tạm khóa)'}</option>
+    `).join('');
+    FilterSelect.value = CurrentValue;
 }
 
 function OpenCreateModal() {

@@ -5,6 +5,11 @@ const State = {
     Accounts: [],
     Roles: [],
     AvailableManagers: [],
+    Page: 0,
+    Size: 10,
+    Sort: 'id,desc',
+    Filters: {},
+    PageData: null,
     EditingId: null
 };
 
@@ -19,22 +24,37 @@ const CreateFields = [...document.querySelectorAll('.CreateField')];
 document.getElementById('AddAccountButton').addEventListener('click', OpenCreateModal);
 ManagerSelect.addEventListener('change', SyncCreateFieldState);
 AccountForm.addEventListener('submit', SaveAccount);
+BindAdminListControls('AccountSort', 'AccountSize', State, LoadPage);
+BindAdminFilterControls({
+    searchId: 'AccountKeyword',
+    applyButtonId: 'AccountSearchButton',
+    resetButtonId: 'AccountResetButton',
+    filters: [
+        { id: 'AccountRoleFilter', key: 'roleId' },
+        { id: 'AccountActiveFilter', key: 'active' }
+    ]
+}, State, LoadPage);
 
 LoadPage();
 
 async function LoadPage() {
     try {
         const [AccountsResult, RolesResult, ManagersResult] = await Promise.all([
-            ApiRequest(ApiUrl),
+            ApiRequest(BuildAdminPageUrl(ApiUrl, State)),
             ApiRequest(`${ApiUrl}/role`),
             ApiRequest(AvailableManagerUrl)
         ]);
 
-        State.Accounts = AccountsResult.data;
+        ApplyAdminPage(State, 'Accounts', AccountsResult.data);
         State.Roles = RolesResult.data;
         State.AvailableManagers = ManagersResult.data;
 
         RenderAccounts();
+        RenderAdminPagination('AccountPagination', State.PageData, Page => {
+            State.Page = Page;
+            LoadPage();
+        });
+        RenderRoleFilterOptions();
         RenderRoleOptions();
     } catch (Error) {
         ShowAlert(Error.message, 'danger');
@@ -44,31 +64,30 @@ async function LoadPage() {
 
 async function ApiRequest(Url, Options = {}) {
     const Response = await fetch(Url, {
+        ...Options,
+        credentials: 'same-origin',
         headers: {
             'Content-Type': 'application/json',
-            ...BuildCsrfHeader(),
+            ...BuildAuthHeader(),
             ...(Options.headers || {})
-        },
-        ...Options
+        }
     });
     const Payload = await Response.json().catch(() => ({}));
+
+    if (Response.status === 401) {
+        RedirectToLogin();
+        throw new Error('Can dang nhap lai.');
+    }
+    if (Response.status === 403) {
+        window.location.href = '/notfound';
+        throw new Error('Khong co quyen truy cap.');
+    }
 
     if (!Response.ok) {
         throw new Error(Payload.message || 'Không thể xử lý yêu cầu.');
     }
 
     return Payload;
-}
-
-function BuildCsrfHeader() {
-    const Token = document.cookie
-        .split('; ')
-        .find(Item => Item.startsWith('XSRF-TOKEN='))
-        ?.split('=')
-        .slice(1)
-        .join('=');
-
-    return Token ? { 'X-XSRF-TOKEN': decodeURIComponent(Token) } : {};
 }
 
 function RenderAccounts() {
@@ -114,6 +133,19 @@ function RenderRoleOptions(SelectedRoleIds = []) {
     RoleSelect.innerHTML = State.Roles.map(Role => `
         <option value="${Role.id}" ${SelectedValues.has(String(Role.id)) ? 'selected' : ''}>${EscapeHtml(Role.label)}</option>
     `).join('');
+}
+
+function RenderRoleFilterOptions() {
+    const FilterSelect = document.getElementById('AccountRoleFilter');
+    if (!FilterSelect) {
+        return;
+    }
+
+    const CurrentValue = FilterSelect.value;
+    FilterSelect.innerHTML = '<option value="">Tất cả vai trò</option>' + State.Roles.map(Role => `
+        <option value="${Role.id}">${EscapeHtml(Role.label)}</option>
+    `).join('');
+    FilterSelect.value = CurrentValue;
 }
 
 function RenderAvailableManagerOptions() {

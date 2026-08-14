@@ -10,14 +10,122 @@
 </head>
 <body>
 <div id="AdminNavigation"></div>
+
 <main class="container page-shell py-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
+        <div>
+            <h1 class="h3 fw-bold mb-1">Quản lý danh mục</h1>
+            <p class="text-secondary mb-0">Tạo danh mục hiển thị trên trang chủ, header hoặc khu vực sản phẩm.</p>
+        </div>
+        <button class="btn btn-success d-inline-flex align-items-center gap-2" id="AddCategoryButton" type="button">
+            <i class="bi bi-plus-lg"></i>
+            <span>Thêm danh mục</span>
+        </button>
+    </div>
+
+    <div id="AlertBox" class="alert d-none" role="alert"></div>
+
+    <div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-3">
+        <div class="d-flex flex-wrap align-items-end gap-2">
+            <div>
+                <label class="form-label text-secondary small mb-1" for="CategoryKeyword">Tìm kiếm</label>
+                <input class="form-control form-control-sm" id="CategoryKeyword" type="search" placeholder="Tên, slug, mô tả...">
+            </div>
+            <div>
+                <label class="form-label text-secondary small mb-1" for="CategoryActiveFilter">Trạng thái</label>
+                <select class="form-select form-select-sm" id="CategoryActiveFilter">
+                    <option value="">Tất cả</option>
+                    <option value="true">Đang hiển thị</option>
+                    <option value="false">Tạm ẩn</option>
+                </select>
+            </div>
+            <button class="btn btn-outline-success btn-sm" id="CategorySearchButton" type="button">Tìm</button>
+            <button class="btn btn-outline-secondary btn-sm" id="CategoryResetButton" type="button">Xóa lọc</button>
+        </div>
+        <div class="d-flex flex-wrap align-items-center gap-2">
+        <label class="form-label text-secondary small mb-0" for="CategorySort">Sắp xếp</label>
+        <select class="form-select form-select-sm w-auto" id="CategorySort">
+            <option value="sortOrder,asc;id,asc">Thứ tự hiển thị</option>
+            <option value="id,desc">ID mới nhất</option>
+            <option value="id,asc">ID cũ nhất</option>
+            <option value="name,asc">Tên A-Z</option>
+        </select>
+        <label class="form-label text-secondary small mb-0" for="CategorySize">Hiển thị</label>
+        <select class="form-select form-select-sm w-auto" id="CategorySize">
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="50">50</option>
+        </select>
+        </div>
+    </div>
+
     <section class="card border-0 shadow-sm">
-        <div class="card-body p-4">
-            <h1 class="h3 fw-bold mb-2">Quản lý danh mục</h1>
-            <p class="text-secondary mb-0">Khu vực quản trị danh mục, header và navbar của website.</p>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead>
+                    <tr>
+                        <th class="ps-4">ID</th>
+                        <th>Thứ tự</th>
+                        <th>Tên danh mục</th>
+                        <th>Slug</th>
+                        <th>Trạng thái</th>
+                        <th class="text-end pe-4">Thao tác</th>
+                    </tr>
+                    </thead>
+                    <tbody id="CategoryTableBody">
+                    <tr><td colspan="6" class="text-center text-secondary py-4">Đang tải dữ liệu...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="border-top px-4 py-3">
+                <div id="CategoryPagination" class="d-flex flex-wrap justify-content-between align-items-center gap-2"></div>
+            </div>
         </div>
     </section>
 </main>
+
+<div class="modal fade" id="CategoryModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header">
+                <h2 class="modal-title h5 fw-bold" id="CategoryModalTitle">Thêm danh mục</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+            </div>
+            <form id="CategoryForm">
+                <div class="modal-body">
+                    <input type="hidden" id="CategoryId">
+                    <div class="mb-3">
+                        <label class="form-label fw-medium" for="Name">Tên danh mục</label>
+                        <input class="form-control" id="Name" maxlength="120" required type="text">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-medium" for="Slug">Slug</label>
+                        <input class="form-control" id="Slug" maxlength="160" type="text" placeholder="Bỏ trống để tự tạo">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-medium" for="Description">Mô tả</label>
+                        <textarea class="form-control" id="Description" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-medium" for="SortOrder">Thứ tự</label>
+                        <input class="form-control" id="SortOrder" min="0" type="number" value="0">
+                    </div>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" id="Active" role="switch" type="checkbox" checked>
+                        <label class="form-check-label" for="Active">Đang hiển thị</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-success">Lưu danh mục</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <footer class="admin-footer">
     <div class="container page-shell d-flex flex-wrap justify-content-between gap-2">
         <span>Hoa Giấy Phù Đổng</span>
@@ -25,7 +133,9 @@
     </div>
 </footer>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/Asset/Security/AuthToken.js"></script>
 <script src="/Asset/Admin/AdminNavigation.js"></script>
-<script src="/Asset/Security/Csrf.js"></script>
+<script src="/Asset/Admin/AdminPagination.js"></script>
+<script src="/Asset/Admin/Category.js"></script>
 </body>
 </html>
